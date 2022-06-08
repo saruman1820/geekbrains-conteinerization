@@ -47,7 +47,7 @@ rules:
   verbs: ["get", "list", "watch"]
 ---  
 apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
+kind: ClusterRoleBinding.yaml
 metadata:
   name: prometheus
 roleRef:

@@ -17,61 +17,11 @@ spec:
       serviceAccount: prometheus
       terminationGracePeriodSeconds: 10
       containers:
-        - name: rabbitmq-k8s
+        - name: prometheus-k8s
           image: prom/prometheus:v2.19.2
           env:
           ports:
-            - name: amqp
-              protocol: TCP
-              containerPort: 5672
-            - name: admin
-              protocol: TCP
-              containerPort: 15672
-          livenessProbe:
-            exec:
-              command: ["rabbitmqctl", "status"]
-            initialDelaySeconds: 60
-            periodSeconds: 60
-            timeoutSeconds: 15
-          readinessProbe:
-            exec:
-              command: ["rabbitmqctl", "status"]
-            initialDelaySeconds: 20
-            periodSeconds: 60
-            timeoutSeconds: 10
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: config-volume
-              mountPath: /etc/rabbitmq
-            - name: data
-              mountPath: /var/lib/rabbitmq
-      volumes:
-        - name: config-volume
-          configMap:
-            name: rabbitmq-config
-            items:
-              - key: rabbitmq.conf
-                path: rabbitmq.conf
-              - key: enabled_plugins
-                path: enabled_plugins
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - rabbitmq
-                topologyKey: kubernetes.io/hostname
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: csi-ceph-hdd-dp1
+            - name: prometheus
+                protocol: TCP
+                port: 9090
+                targetPort: 9090
